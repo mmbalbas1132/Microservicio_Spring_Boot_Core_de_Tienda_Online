@@ -82,4 +82,29 @@ public class ClienteResteController {
         return cliente;
     }
 
+    //Modificar un cliente
+    //Para modificar un cliente, se debe enviar una petición PUT a la URL /clientes/{username} con el siguiente JSON en el cuerpo de la petición:
+    //Para resover esto uso Postman
+    @PutMapping("/clientes")
+    public Cliente modificarCliente(@RequestBody Cliente cliente) {
+       Cliente clienteEncontrado = clientes.stream()
+                .filter(c -> c.getUsername().equalsIgnoreCase(cliente.getUsername()))
+                .findFirst()
+                .orElseThrow();
+        clienteEncontrado.setNombre(cliente.getNombre());
+        clienteEncontrado.setPassword(cliente.getPassword());
+        return clienteEncontrado;
+    }
+
+    //Eliminar un cliente
+    //Para eliminar un cliente, se debe enviar una petición DELETE a la URL /clientes/{username}
+    @DeleteMapping("/clientes/{username}")
+    public void eliminarCliente(@PathVariable String username) {
+        Cliente clienteEncontrado = clientes.stream()
+                .filter(c -> c.getUsername().equalsIgnoreCase(username))
+                .findFirst()
+                .orElseThrow();
+        clientes.remove(clienteEncontrado);
+    }
+
 }
