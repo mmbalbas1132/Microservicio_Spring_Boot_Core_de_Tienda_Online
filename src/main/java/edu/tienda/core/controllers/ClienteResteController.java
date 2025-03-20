@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/clientes")
 
 public class ClienteResteController {
 
@@ -24,7 +25,7 @@ public class ClienteResteController {
 
 
     //Obtener todos los clientes
-    @GetMapping("/clientes")
+    @GetMapping
     public List<Cliente> getClientes() {
         return clientes;
     }
@@ -41,7 +42,7 @@ public class ClienteResteController {
 //    }
 
     //    Recodifico la oanterior como un stream y una expresión lambda
-    @GetMapping("/clientes/{username}")
+    @GetMapping("/{username}")
     public Cliente getCliente(@PathVariable String username) {
         return clientes.stream()
                 .filter(cliente -> cliente.getUsername().equalsIgnoreCase(username))
@@ -51,7 +52,7 @@ public class ClienteResteController {
 
 
     //Obtener un cliente por su nombre
-    @GetMapping("/clientes/nombre/{nombre}")
+    @GetMapping("/nombre/{nombre}")
     public Cliente getClientePorNombre(@PathVariable String nombre) {
         for (Cliente cliente : clientes) {
             if (cliente.getNombre().equalsIgnoreCase(nombre)) {
@@ -76,7 +77,7 @@ public class ClienteResteController {
     //en un objeto de tipo Cliente. Para ello, se utiliza la anotación @RequestBody en el parámetro del método.
     //Para consumir este servicio, se debe enviar una petición POST a la URL /clientes con el siguiente JSON en el cuerpo de la petición:
     //Para resover esto uso Postman
-    @PostMapping("/clientes")
+    @PostMapping
     public Cliente altaCliente(@RequestBody Cliente cliente) {
         clientes.add(cliente);
         return cliente;
@@ -85,7 +86,7 @@ public class ClienteResteController {
     //Modificar un cliente
     //Para modificar un cliente, se debe enviar una petición PUT a la URL /clientes/{username} con el siguiente JSON en el cuerpo de la petición:
     //Para resover esto uso Postman
-    @PutMapping("/clientes")
+    @PutMapping
     public Cliente modificarCliente(@RequestBody Cliente cliente) {
        Cliente clienteEncontrado = clientes.stream()
                 .filter(c -> c.getUsername().equalsIgnoreCase(cliente.getUsername()))
@@ -98,7 +99,7 @@ public class ClienteResteController {
 
     //Eliminar un cliente
     //Para eliminar un cliente, se debe enviar una petición DELETE a la URL /clientes/{username}
-    @DeleteMapping("/clientes/{username}")
+    @DeleteMapping("{username}")
     public void eliminarCliente(@PathVariable String username) {
         Cliente clienteEncontrado = clientes.stream()
                 .filter(c -> c.getUsername().equalsIgnoreCase(username))
