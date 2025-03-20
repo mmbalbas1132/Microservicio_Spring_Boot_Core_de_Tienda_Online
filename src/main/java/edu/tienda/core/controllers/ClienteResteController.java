@@ -2,6 +2,7 @@ package edu.tienda.core.controllers;
 
 
 import edu.tienda.core.domain.Cliente;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -26,8 +27,8 @@ public class ClienteResteController {
 
     //Obtener todos los clientes
     @GetMapping
-    public List<Cliente> getClientes() {
-        return clientes;
+    public ResponseEntity <List<Cliente>> getClientes() {
+        return ResponseEntity.ok(clientes);
     }
 
     //Obtener un cliente por su username
