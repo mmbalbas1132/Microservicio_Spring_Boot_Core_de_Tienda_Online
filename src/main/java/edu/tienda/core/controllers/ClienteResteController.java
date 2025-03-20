@@ -4,7 +4,9 @@ package edu.tienda.core.controllers;
 import edu.tienda.core.domain.Cliente;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class ClienteResteController {
 
     //Obtener todos los clientes
     @GetMapping
-    public ResponseEntity <List<Cliente>> getClientes() {
+    public ResponseEntity <?> getClientes() {
         return ResponseEntity.ok(clientes);
     }
 
@@ -44,33 +46,33 @@ public class ClienteResteController {
 
     //    Recodifico la oanterior como un stream y una expresión lambda
     @GetMapping("/{username}")
-    public Cliente getCliente(@PathVariable String username) {
-        return clientes.stream()
+    public ResponseEntity <?> getCliente(@PathVariable String username) {
+        return ResponseEntity.ok(clientes.stream()
                 .filter(cliente -> cliente.getUsername().equalsIgnoreCase(username))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow());
     }
 
 
     //Obtener un cliente por su nombre
-    @GetMapping("/nombre/{nombre}")
-    public Cliente getClientePorNombre(@PathVariable String nombre) {
-        for (Cliente cliente : clientes) {
-            if (cliente.getNombre().equalsIgnoreCase(nombre)) {
-                return cliente;
-            }
-        }
-        return null;
-    }
+//    @GetMapping("/nombre/{nombre}")
+//    public Cliente getClientePorNombre(@PathVariable String nombre) {
+//        for (Cliente cliente : clientes) {
+//            if (cliente.getNombre().equalsIgnoreCase(nombre)) {
+//                return cliente;
+//            }
+//        }
+//        return null;
+//    }
 
     //Obtener un cliente por su nombre con stream y expresión lambda
-//    @GetMapping("/clientes/nombre/{nombre}")
-//    public Cliente getClientePorNombre(@PathVariable String nombre) {
-//        return clientes.stream()
-//                .filter(cliente -> cliente.getNombre().equalsIgnoreCase(nombre))
-//                .findFirst().orElseThrow();
+    @GetMapping("/nombre/{nombre}")
+    public ResponseEntity <?> getClientePorNombre(@PathVariable String nombre) {
+        return ResponseEntity.ok (clientes.stream()
+                .filter(cliente -> cliente.getNombre().equalsIgnoreCase(nombre))
+                .findFirst().orElseThrow());
 
-//    }
+    }
 
     //Dar de alta un cliente
     //A diferencia de los anteriores servicios de recupero, este endpoint de alta lógicamente necesitará la información del usuario a crear.
@@ -79,34 +81,43 @@ public class ClienteResteController {
     //Para consumir este servicio, se debe enviar una petición POST a la URL /clientes con el siguiente JSON en el cuerpo de la petición:
     //Para resover esto uso Postman
     @PostMapping
-    public Cliente altaCliente(@RequestBody Cliente cliente) {
+    public ResponseEntity<?> altaCliente(@RequestBody Cliente cliente) {
         clientes.add(cliente);
-        return cliente;
+
+        //Obtener url de la petición
+        ServletUriComponentsBuilder ServlletUriComponentsBuilder;
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{username}")
+                .buildAndExpand(cliente.getUsername())
+                .toUri();
+        return ResponseEntity.created(location).body(cliente);
     }
 
     //Modificar un cliente
     //Para modificar un cliente, se debe enviar una petición PUT a la URL /clientes/{username} con el siguiente JSON en el cuerpo de la petición:
     //Para resover esto uso Postman
     @PutMapping
-    public Cliente modificarCliente(@RequestBody Cliente cliente) {
+    public ResponseEntity <?> modificarCliente(@RequestBody Cliente cliente) {
        Cliente clienteEncontrado = clientes.stream()
                 .filter(c -> c.getUsername().equalsIgnoreCase(cliente.getUsername()))
                 .findFirst()
                 .orElseThrow();
         clienteEncontrado.setNombre(cliente.getNombre());
         clienteEncontrado.setPassword(cliente.getPassword());
-        return clienteEncontrado;
+        return ResponseEntity.ok(clienteEncontrado);
     }
 
     //Eliminar un cliente
     //Para eliminar un cliente, se debe enviar una petición DELETE a la URL /clientes/{username}
     @DeleteMapping("{username}")
-    public void eliminarCliente(@PathVariable String username) {
+    public ResponseEntity  eliminarCliente(@PathVariable String username) {
         Cliente clienteEncontrado = clientes.stream()
                 .filter(c -> c.getUsername().equalsIgnoreCase(username))
                 .findFirst()
                 .orElseThrow();
         clientes.remove(clienteEncontrado);
+        return ResponseEntity.noContent().build();
     }
 
 }
