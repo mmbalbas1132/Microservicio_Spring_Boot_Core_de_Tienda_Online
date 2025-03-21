@@ -85,7 +85,6 @@ public class ClienteResteController {
         clientes.add(cliente);
 
         //Obtener url de la petición
-        ServletUriComponentsBuilder ServlletUriComponentsBuilder;
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{username}")
