@@ -1,6 +1,7 @@
 package edu.tienda.core.services;
 
 import edu.tienda.core.domain.Producto;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +24,7 @@ public class ProductosServiceImpl {
     }
 
     // Método que retorna un producto por su id
-    public Producto getProductoById(Integer id) {
+    public Producto getProductoById(@PathVariable Integer id) {
         return productos.stream().filter(p -> p.getId().equals(id)).findFirst().orElse(null);
     }
 
