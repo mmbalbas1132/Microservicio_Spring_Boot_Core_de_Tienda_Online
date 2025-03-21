@@ -53,6 +53,11 @@ public class ClienteResteController {
 
     @GetMapping("/{username}")
     public ResponseEntity<Cliente> getCliente(@PathVariable String username) {
+
+        if (username.length() != 3) {
+            throw new ResourceNotFoundException("El username debe tener 3 caracteres");
+        }
+
         return clientes.stream()
                 .filter(cliente -> cliente.getUsername().equals(username))
                 .findFirst().map(ResponseEntity::ok)
